@@ -1,7 +1,6 @@
 package br.com.zup.talents.vacina.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
