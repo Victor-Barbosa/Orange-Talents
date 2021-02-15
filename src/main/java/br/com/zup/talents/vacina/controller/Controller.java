@@ -5,7 +5,6 @@ import br.com.zup.talents.vacina.model.Usuario;
 import br.com.zup.talents.vacina.model.Vacinacao;
 import br.com.zup.talents.vacina.repository.UsuarioRepository;
 import br.com.zup.talents.vacina.repository.VacinacaoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,31 +18,28 @@ import javax.validation.Valid;
 @RequestMapping("/api")
 public class Controller {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private VacinacaoRepository vacinacaoRepository;
+    private final VacinacaoRepository vacinacaoRepository;
+
+    public Controller(UsuarioRepository usuarioRepository, VacinacaoRepository vacinacaoRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.vacinacaoRepository = vacinacaoRepository;
+    }
 
     @PostMapping("/usuario")
-    public ResponseEntity<Usuario> cadastraUsuario (@RequestBody @Valid Usuario usuario){
+    public ResponseEntity<Usuario> cadastraUsuario(@RequestBody @Valid Usuario usuario) {
 
         try {
-           return new ResponseEntity<Usuario>(usuarioRepository.save(usuario), HttpStatus.CREATED);
-        }catch (Exception e){
-            return new ResponseEntity<Usuario>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(usuarioRepository.save(usuario), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @PostMapping("/vacina")
-    public ResponseEntity<Vacinacao> vacinaAplicada (@RequestBody @Valid Vacinacaoform form){
+    public ResponseEntity<Vacinacao> vacinaAplicada(@RequestBody @Valid Vacinacaoform form) {
 
-        Vacinacao vacinacao = form.converter(usuarioRepository);
-        vacinacaoRepository.save(vacinacao);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-
+        return form.converter(usuarioRepository, vacinacaoRepository);
     }
-
-
 }
